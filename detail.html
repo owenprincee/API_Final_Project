@@ -1,0 +1,83 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Details</title>
+    <style>
+        body {
+            background-color: #3498db;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #heroDetails {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        #heroImage {
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hero Details</h1>
+    <div id="heroDetails">
+        <!-- Hero details will be dynamically added here -->
+    </div>
+    <a href="index.html" class="back-link">← Back to Hero List</a>
+
+    <script>
+        // Get the hero ID from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const heroId = urlParams.get('id');
+
+        // Fetch specific hero details from the Midland Class API
+        fetch(`http://157.230.214.215/api/owen_heros/${heroId}`)
+            .then(result => result.json())
+            .then(hero => {
+                const heroDetails = document.getElementById('heroDetails');
+                
+                // Create hero image
+                const heroImage = document.createElement('img');
+                heroImage.id = 'heroImage';
+                heroImage.src = hero.image;
+                heroImage.alt = hero.name;
+                heroDetails.appendChild(heroImage);
+
+                // Create details paragraphs
+                const detailsToShow = [
+                    `Name: ${hero.name}`,
+                    `Real Name: ${hero.real_name}`,
+                    `Abilities: ${hero.abilities}`,
+                    `Team: ${hero.team}`
+                ];
+
+                detailsToShow.forEach(detail => {
+                    const detailParagraph = document.createElement('p');
+                    detailParagraph.textContent = detail;
+                    heroDetails.appendChild(detailParagraph);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching hero details:', error);
+                const heroDetails = document.getElementById('heroDetails');
+                const errorMessage = document.createElement('p');
+                errorMessage.textContent = 'Error loading hero details. Please try again later.';
+                heroDetails.appendChild(errorMessage);
+            });
+    </script>
+</body>
+</html>
